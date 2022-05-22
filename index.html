@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>STRANGER SIMULATION</title>
+    <style>
+      canvas {
+        background-color: black;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      #titleDIV {
+        position: relative;
+      }
+
+      h1 {
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" onkeypress="drawRect()"></canvas>
+    <div id="titleDIV"><h1>The Stranger Simulation -- Siddhanth Kumar</h1></div>
+    <script>
+      var canvas = document.getElementById('canvas');
+
+      document.addEventListener(
+        'keydown',
+        (e) => {
+          console.log(e);
+          if (e.code === 'ArrowUp') {
+            controller.ArrowUp.pressed = true;
+          }
+
+          if (e.code === 'ArrowDown') {
+            controller.ArrowDown.pressed = true;
+          }
+
+          if (e.code === 'ArrowRight') {
+            controller.ArrowRight.pressed = true;
+          }
+
+          if (e.code === 'ArrowLeft') {
+            controller.ArrowLeft.pressed = true;
+          }
+        },
+        false
+      );
+
+      document.addEventListener(
+        'keyup',
+        (e) => {
+          if (e.code === 'ArrowUp') {
+            controller.ArrowUp.pressed = false;
+          }
+
+          if (e.code === 'ArrowDown') {
+            controller.ArrowDown.pressed = false;
+          }
+
+          if (e.code === 'ArrowRight') {
+            controller.ArrowRight.pressed = false;
+          }
+
+          if (e.code === 'ArrowLeft') {
+            controller.ArrowLeft.pressed = false;
+          }
+        },
+        false
+      );
+      var ctx = canvas.getContext('2d');
+      ctx.canvas.width = window.innerWidth;
+      ctx.canvas.height = window.innerHeight;
+      var ballRadius = 15;
+      var x = canvas.width / 2;
+      var y = canvas.height - 30;
+      var rectx = 120;
+      var recty = 120;
+      var dx = 8;
+      var dy = -8;
+      var ballColors = [
+        'red',
+        'orange',
+        'yellow',
+        'green',
+        'blue',
+        'purple',
+        'white',
+      ];
+
+      ballColor = 0;
+
+      const controller = {
+        ArrowUp: { pressed: false },
+        ArrowDown: { pressed: false },
+        ArrowRight: { pressed: false },
+        ArrowLeft: { pressed: false },
+      };
+
+      function drawBall() {
+        ctx.beginPath();
+        ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+        ctx.fillStyle = ballColors[ballColor];
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function drawRectangle() {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(rectx, recty, 100, 100);
+      }
+
+      function draw() {
+        drawBall();
+
+        if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+          dx = -dx;
+          ballColor = Math.floor(Math.random() * 6);
+        }
+        if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+          dy = -dy;
+          ballColor = Math.floor(Math.random() * 6);
+        }
+
+        x += dx;
+        y += dy;
+      }
+
+      function drawRect() {
+        drawRectangle();
+
+        if (controller.ArrowUp.pressed === true && recty > 0) {
+          recty -= 15;
+        }
+
+        if (
+          controller.ArrowDown.pressed === true &&
+          recty + 100 < canvas.height
+        ) {
+          recty += 15;
+        }
+
+        if (
+          controller.ArrowRight.pressed === true &&
+          rectx + 100 <= canvas.width
+        ) {
+          rectx += 15;
+        }
+
+        if (controller.ArrowLeft.pressed === true && rectx > 0) {
+          rectx -= 15;
+        }
+      }
+
+      function fullDraw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        draw();
+        drawRect(null);
+      }
+
+      setInterval(fullDraw, 1000 / 60);
+    </script>
+  </body>
+</html>
